@@ -8,37 +8,47 @@
 import Foundation
 
 // MARK: - GetPopularMoviesResponse
-struct GetPopularMoviesResponse: Decodable {
-
+struct GetPopularMoviesResponse: Codable {
     let page: Int
-    let results: [Result]
-    let totalResults: Int
-    let totalPages: Int
+    let results: [PopularMovie]
+    let totalPages, totalResults: Int
 
-
-    // MARK: - Result
-    struct Result: Decodable, Identifiable {
-        let posterPath: String
-        let adult: Bool
-        let overview: String
-        let releaseDate: String
-        let genreids: [Int]
-        let id: Int
-        let originalTitle: String
-        let originalLanguage: OriginalLanguage
-        let title: String
-        let backdropPath: String
-        let popularity: Double
-        let voteCount: Int
-        let video: Bool
-        let voteAverage: Double
-    }
-
-    enum OriginalLanguage: String, Decodable {
-        case en
+    enum CodingKeys: String, CodingKey {
+        case page, results
+        case totalPages = "total_pages"
+        case totalResults = "total_results"
     }
 
 }
 
+// MARK: - Result
+struct PopularMovie: Codable, Identifiable {
 
+    let adult: Bool
+    let backdropPath: String
+    let genreids: [Int]
+    let id: Int
+    let originalLanguage: String
+    let originalTitle, overview: String
+    let popularity: Double
+    let posterPath, releaseDate, title: String
+    let video: Bool
+    let voteAverage: Double
+    let voteCount: Int
 
+    enum CodingKeys: String, CodingKey {
+        case adult
+        case backdropPath = "backdrop_path"
+        case genreids = "genre_ids"
+        case id
+        case originalLanguage = "original_language"
+        case originalTitle = "original_title"
+        case overview, popularity
+        case posterPath = "poster_path"
+        case releaseDate = "release_date"
+        case title, video
+        case voteAverage = "vote_average"
+        case voteCount = "vote_count"
+    }
+
+}

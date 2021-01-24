@@ -8,13 +8,11 @@
 import SwiftUI
 import URLImage
 
-let grid = GridItem()
 
 class PopularMoviewViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
-    @Published var popularMovies: [GetPopularMoviesResponse.Result] = []
-
+    @Published var popularMovies: [PopularMovie] = []
 
     init() {
         getPopularMovies()
@@ -22,7 +20,7 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
 
     private func getPopularMovies() {
         MoviesNetworkService.getPopularMovies { (movies, error) in
-            guard let movies = movies, error == nil else { return print(error) }
+            guard let movies = movies, error == nil else { return print(error.debugDescription) }
             
             DispatchQueue.main.async {
                 self.popularMovies = movies.results
@@ -34,9 +32,11 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
 struct PopularMoviesView: View {
     @ObservedObject var popularMoviesVM = PopularMoviewViewModel()
 
+    private let gridLayout = [GridItem(), GridItem()]
+
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [grid, grid]) {
+            LazyVGrid(columns: gridLayout) {
                 ForEach(popularMoviesVM.popularMovies) {
                     MoviewCell(movie: $0)
                 }
@@ -54,13 +54,15 @@ struct PopularMoviesView_Previews: PreviewProvider {
 }
 
 struct MoviewCell: View {
-    var movie: GetPopularMoviesResponse.Result
+    var movie: PopularMovie
 
     private let cellWidth = UIScreen.main.bounds.width * 0.46
+    
 
     var body: some View {
-        ZStack {
-            URLImage(url: URL(string: MoviesNetworkService.imageBaseUrl +  movie.posterPath)!) { image in
+        ZStack { 
+            URLImage(url:
+                        URL(string: MoviesNetworkService.imageBaseUrl +  movie.posterPath)!) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)

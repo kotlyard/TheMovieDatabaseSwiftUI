@@ -41,6 +41,8 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data, error == nil else { return completion(nil, error) }
             
+            print("Response: \(String(data: data, encoding: .utf8))")
+            
             guard let popularMovies = try? JSONDecoder().decode(GetPopularMoviesResponse.self,
                                                                 from: data) else {
                 return completion(nil, nil)
