@@ -54,7 +54,7 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
         baseUrl.queryItems = [
             URLQueryItem(name: "api_key", value: apiKey),
         ]
-
+ 
         guard let url = baseUrl.url else { return completion(nil, nil) }
 
         // Performing request

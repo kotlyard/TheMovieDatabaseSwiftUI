@@ -41,7 +41,7 @@ struct PopularMoviesView: View {
             LazyVGrid(columns: gridLayout) {
                 ForEach(popularMoviesVM.popularMovies) { movie in
                     NavigationLink(
-                        destination: DetailedMovieView(movieVM: DetailedMovieViewModel(movieId: movie.id)),
+                        destination: DetailedMovieView(movieId: movie.id),
                         label: {
                             MovieCell(movie: movie)
                         })

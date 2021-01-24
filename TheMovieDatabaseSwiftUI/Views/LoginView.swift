@@ -21,6 +21,8 @@ struct LoginView: View {
                     Text("Hello \(username)!")
                         .font(.largeTitle)
                     Spacer()
+                    Text("Type anything\nIt doesn't matter").font(.title)
+                    Spacer()
                     RegularTextField(placeholder: "Enter username",
                                      binding: $username)
                         .padding()
@@ -28,14 +30,13 @@ struct LoginView: View {
                         shouldPushPopularMovies = true
                     }
                     .disabled(username.isEmpty)
-                    
+
                 }.padding()
                 NavigationLink(
                     "", destination: PopularMoviesView(),
                     isActive: $shouldPushPopularMovies)
-                }
-
-        }.navigationTitle("Login")
+            }.navigationTitle("Login")
+        }
     }
 
 }
