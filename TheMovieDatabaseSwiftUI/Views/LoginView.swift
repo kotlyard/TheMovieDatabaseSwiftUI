@@ -31,7 +31,7 @@ struct LoginView: View {
                     
                 }.padding()
                 NavigationLink(
-                    "", destination: PopularMoviesView(popularMoviesVM: PopularMoviewViewModel()),
+                    "", destination: PopularMoviesView(),
                     isActive: $shouldPushPopularMovies)
                 }
 

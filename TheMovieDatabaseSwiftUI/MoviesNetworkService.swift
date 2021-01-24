@@ -8,21 +8,24 @@
 import Foundation
 import UIKit
 
-protocol NetworkProvidable: class {
+protocol MoviesNetworkProvidable: class {
+
     static func getPopularMovies(_ completion: @escaping (GetPopularMoviesResponse?, Error?) -> Void)
     static func getMovie(by id: String, _ completion: @escaping (GetMovieResponse?, Error?) -> Void)
+
 }
 
 
-final class NetworkService: NetworkProvidable {
+final class MoviesNetworkService: MoviesNetworkProvidable {
     private static let apiKey = "edc593927fcc046752e28da2a8bddb0e"
-    
+    static let imageBaseUrl = "https://image.tmdb.org/t/p/w500"
+
     static func getPopularMovies(_ completion: @escaping (GetPopularMoviesResponse?, Error?) -> Void) {
         // Creating base url component
         guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/popular") else {
             return completion(nil, nil)
         }
-        
+
         // Creating query items
         let queryItems = [
             URLQueryItem(name: "api_key", value: apiKey),

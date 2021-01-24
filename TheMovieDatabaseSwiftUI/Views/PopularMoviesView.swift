@@ -14,14 +14,14 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
     let id = UUID()
 
     @Published var popularMovies: [GetPopularMoviesResponse.Result] = []
-    
+
 
     init() {
         getPopularMovies()
     }
-    
+
     private func getPopularMovies() {
-        NetworkService.getPopularMovies { (movies, error) in
+        MoviesNetworkService.getPopularMovies { (movies, error) in
             guard let movies = movies, error == nil else { return print(error) }
             
             DispatchQueue.main.async {
@@ -32,18 +32,16 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
 }
 
 struct PopularMoviesView: View {
-    @ObservedObject var popularMoviesVM: PopularMoviewViewModel
+    @ObservedObject var popularMoviesVM = PopularMoviewViewModel()
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVGrid(columns: [grid, grid]) {
-                    ForEach(popularMoviesVM.popularMovies) {
-                        MoviewCell(movie: $0)
-                    }
+        ScrollView {
+            LazyVGrid(columns: [grid, grid]) {
+                ForEach(popularMoviesVM.popularMovies) {
+                    MoviewCell(movie: $0)
                 }
-            }.navigationBarTitle("Popular Movies")
-        }
+            }
+        }.navigationBarTitle("Popular Movies")
     }
 }
 
@@ -62,7 +60,7 @@ struct MoviewCell: View {
 
     var body: some View {
         ZStack {
-            URLImage(url: URL(string: movie.posterPath)!) { image in
+            URLImage(url: URL(string: MoviesNetworkService.imageBaseUrl +  movie.posterPath)!) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
