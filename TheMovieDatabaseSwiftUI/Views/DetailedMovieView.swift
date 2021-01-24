@@ -30,14 +30,18 @@ class DetailedMovieViewModel: ObservableObject {
 }
 
 struct DetailedMovieView: View {
-//    var movieId: Int
-
     @ObservedObject var movieVM: DetailedMovieViewModel
 
     var body: some View {
-        VStack {
-            
-        }.ignoresSafeArea()
+        guard let movie = movieVM.movie else {
+            return AnyView(Text("No movie"))
+        }
+
+        return AnyView(VStack {
+            Text(movie.title)
+            Text(movie.releaseDate)
+            Text(movie.budget.description)
+        })
     }
 }
 

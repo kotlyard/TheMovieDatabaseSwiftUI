@@ -7,8 +7,9 @@
 
 import Foundation
 
-// MARK: - GetMovieResponse
-struct DetailedMovie: Decodable {
+// MARK: - DetailedMovie
+struct DetailedMovie: Codable {
+
     let adult: Bool
     let backdropPath: String
     let budget: Int
@@ -17,7 +18,7 @@ struct DetailedMovie: Decodable {
     let id: Int
     let imdbid, originalLanguage, originalTitle, overview: String
     let popularity: Double
-    let posterPath: String?
+    let posterPath: String
     let productionCompanies: [ProductionCompany]
     let productionCountries: [ProductionCountry]
     let releaseDate: String
@@ -27,6 +28,25 @@ struct DetailedMovie: Decodable {
     let video: Bool
     let voteAverage: Double
     let voteCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case adult
+        case backdropPath = "backdrop_path"
+        case budget, genres, homepage, id
+        case imdbid = "imdb_id"
+        case originalLanguage = "original_language"
+        case originalTitle = "original_title"
+        case overview, popularity
+        case posterPath = "poster_path"
+        case productionCompanies = "production_companies"
+        case productionCountries = "production_countries"
+        case releaseDate = "release_date"
+        case revenue, runtime
+        case spokenLanguages = "spoken_languages"
+        case status, tagline, title, video
+        case voteAverage = "vote_average"
+        case voteCount = "vote_count"
+    }
 }
 
 // MARK: - Genre
@@ -35,12 +55,12 @@ struct Genre: Codable {
     let name: String
 }
 
+
 // MARK: - ProductionCompany
 struct ProductionCompany: Codable {
     let id: Int
     let logoPath: String?
-    let name: String
-    let originCountry: String
+    let name, originCountry: String
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -51,13 +71,22 @@ struct ProductionCompany: Codable {
 }
 
 // MARK: - ProductionCountry
-struct ProductionCountry: Decodable {
-    let iso3166_1: String
-    let name: String
+struct ProductionCountry: Codable {
+    let iso3166_1, name: String
+
+    enum CodingKeys: String, CodingKey {
+        case iso3166_1 = "iso_3166_1"
+        case name
+    }
 }
 
 // MARK: - SpokenLanguage
-struct SpokenLanguage: Decodable {
-    let iso639_1: String
-    let name: String
+struct SpokenLanguage: Codable {
+    let englishName, iso639_1, name: String
+
+    enum CodingKeys: String, CodingKey {
+        case englishName = "english_name"
+        case iso639_1 = "iso_639_1"
+        case name
+    }
 }

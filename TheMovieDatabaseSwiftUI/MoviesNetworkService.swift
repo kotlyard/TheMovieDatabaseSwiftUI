@@ -11,7 +11,7 @@ import UIKit
 
 protocol MoviesNetworkProvidable: class {
 
-    static func getPopularMovies(_ completion: @escaping (PopularMoviesResponse?, Error?) -> Void)
+    static func getPopularMovies(page: Int, _ completion: @escaping (PopularMoviesResponse?, Error?) -> Void)
     static func getMovie(by id: Int, _ completion: @escaping (DetailedMovie?, Error?) -> Void)
 
 }
@@ -21,21 +21,20 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
     private static let apiKey = "edc593927fcc046752e28da2a8bddb0e"
     static let imageBaseUrl = "https://image.tmdb.org/t/p/w500"
 
-    static func getPopularMovies(_ completion: @escaping (PopularMoviesResponse?, Error?) -> Void) {
+    static func getPopularMovies(page: Int = 1, _ completion: @escaping (PopularMoviesResponse?, Error?) -> Void) {
         // Creating base url component
         guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/popular") else {
             return completion(nil, nil)
         }
 
         // Creating query items
-        let queryItems = [
+        baseUrl.queryItems = [
             URLQueryItem(name: "api_key", value: apiKey),
             URLQueryItem(name: "region", value: "ua"),
             URLQueryItem(name: "language", value: "en-US"),
-            URLQueryItem(name: "page", value: "1"),
+            URLQueryItem(name: "page", value: "\(page)"),
         ]
 
-        baseUrl.queryItems = queryItems
         guard let url = baseUrl.url else { return completion(nil, nil) }
 
         // Performing request
@@ -47,20 +46,15 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
 
     static func getMovie(by id: Int, _ completion: @escaping (DetailedMovie?, Error?) -> Void) {
         // Creating base url component
-        guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/popular") else {
+        guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/\(id)") else {
             return completion(nil, nil)
         }
 
         // Creating query items
-        let queryItems = [
+        baseUrl.queryItems = [
             URLQueryItem(name: "api_key", value: apiKey),
-            URLQueryItem(name: "region", value: "ua"),
-            URLQueryItem(name: "language", value: "en-US"),
-            URLQueryItem(name: "page", value: "1"),
         ]
 
-
-        baseUrl.queryItems = queryItems
         guard let url = baseUrl.url else { return completion(nil, nil) }
 
         // Performing request
