@@ -15,7 +15,7 @@ struct LoginView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                BackgroundView(topColor: .blue, bottomColor: .red)
+                BackgroundGradientView(topColor: .blue, bottomColor: .red)
                 VStack {
                     Spacer()
                     Text("Hello \(username)!")

@@ -65,11 +65,14 @@ struct MoviewCell: View {
                         URL(string: MoviesNetworkService.imageBaseUrl +  movie.posterPath)!) { image in
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fit)
             }
-            Text(movie.originalTitle)
+            Text(movie.title)
+                .font(.body)
+                .foregroundColor(.gray)
+                .background(Color.black.opacity(0.8))
         }
         .frame(width: cellWidth, height: 250, alignment: .center)
-        .cornerRadius(8)
+        .cornerRadius(10)
     }
 }
