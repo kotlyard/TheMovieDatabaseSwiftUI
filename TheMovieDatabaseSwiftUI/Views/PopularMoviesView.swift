@@ -8,8 +8,8 @@
 import SwiftUI
 import URLImage
 
-
 class PopularMoviewViewModel: ObservableObject, Identifiable {
+
     let id = UUID()
 
     @Published var popularMovies: [PopularMovie] = []
@@ -39,10 +39,12 @@ struct PopularMoviesView: View {
     var body: some View {
         ScrollView {
             LazyVGrid(columns: gridLayout) {
-                ForEach(popularMoviesVM.popularMovies) {
-                    NavigationLink(destination: DetailedMovieView(movieVM: $0.id)) {
-                        MovieCell(movie: $0)
-                    }
+                ForEach(popularMoviesVM.popularMovies) { movie in
+                    NavigationLink(
+                        destination: DetailedMovieView(movieVM: DetailedMovieViewModel(movieId: movie.id)),
+                        label: {
+                            MovieCell(movie: movie)
+                        })
                 }
             }
         }.navigationBarTitle("Popular Movies")
