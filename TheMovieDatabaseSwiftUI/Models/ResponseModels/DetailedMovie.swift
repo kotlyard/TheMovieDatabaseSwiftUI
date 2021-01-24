@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - GetMovieResponse
-struct GetMovieResponse: Decodable {
+struct DetailedMovie: Decodable {
     let adult: Bool
     let backdropPath: String
     let budget: Int

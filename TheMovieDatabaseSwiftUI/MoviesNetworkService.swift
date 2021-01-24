@@ -10,8 +10,8 @@ import UIKit
 
 protocol MoviesNetworkProvidable: class {
 
-    static func getPopularMovies(_ completion: @escaping (GetPopularMoviesResponse?, Error?) -> Void)
-    static func getMovie(by id: String, _ completion: @escaping (GetMovieResponse?, Error?) -> Void)
+    static func getPopularMovies(_ completion: @escaping (PopularMoviesResponse?, Error?) -> Void)
+    static func getMovie(by id: Int, _ completion: @escaping (DetailedMovie?, Error?) -> Void)
 
 }
 
@@ -20,7 +20,7 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
     private static let apiKey = "edc593927fcc046752e28da2a8bddb0e"
     static let imageBaseUrl = "https://image.tmdb.org/t/p/w500"
 
-    static func getPopularMovies(_ completion: @escaping (GetPopularMoviesResponse?, Error?) -> Void) {
+    static func getPopularMovies(_ completion: @escaping (PopularMoviesResponse?, Error?) -> Void) {
         // Creating base url component
         guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/popular") else {
             return completion(nil, nil)
@@ -43,7 +43,7 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
             
             print("Response: \(String(data: data, encoding: .utf8))")
             
-            guard let popularMovies = try? JSONDecoder().decode(GetPopularMoviesResponse.self,
+            guard let popularMovies = try? JSONDecoder().decode(PopularMoviesResponse.self,
                                                                 from: data) else {
                 return completion(nil, nil)
             }
@@ -53,7 +53,7 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
 
     }
 
-    static func getMovie(by id: String, _ completion: (GetMovieResponse?, Error?) -> Void) {
+    static func getMovie(by id: Int, _ completion: (DetailedMovie?, Error?) -> Void) {
         
     }
 

@@ -20,8 +20,10 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
 
     private func getPopularMovies() {
         MoviesNetworkService.getPopularMovies { (movies, error) in
-            guard let movies = movies, error == nil else { return print(error.debugDescription) }
-            
+            guard let movies = movies, error == nil else {
+                return print(error.debugDescription)
+            }
+
             DispatchQueue.main.async {
                 self.popularMovies = movies.results
             }
@@ -38,7 +40,9 @@ struct PopularMoviesView: View {
         ScrollView {
             LazyVGrid(columns: gridLayout) {
                 ForEach(popularMoviesVM.popularMovies) {
-                    MoviewCell(movie: $0)
+                    NavigationLink(destination: DetailedMovieView(movieVM: $0.id)) {
+                        MovieCell(movie: $0)
+                    }
                 }
             }
         }.navigationBarTitle("Popular Movies")
@@ -53,23 +57,29 @@ struct PopularMoviesView_Previews: PreviewProvider {
     }
 }
 
-struct MoviewCell: View {
+struct MovieCell: View {
     var movie: PopularMovie
 
     private let cellWidth = UIScreen.main.bounds.width * 0.46
-    
 
     var body: some View {
-        ZStack { 
-            URLImage(url:
-                        URL(string: MoviesNetworkService.imageBaseUrl +  movie.posterPath)!) { image in
+        let alignment = Alignment(horizontal: .center, vertical: .bottom)
+
+        ZStack(alignment: alignment) {
+            #warning("remove force unwrap!")
+            URLImage(url: URL(string: MoviesNetworkService.imageBaseUrl + movie.posterPath)!) { image in
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
             }
             Text(movie.title)
-                .font(.body)
-                .foregroundColor(.gray)
+                .font(.system(.body, design: .rounded))
+                .multilineTextAlignment(.leading)
+                .foregroundColor(Color.white.opacity(0.8))
+                .padding([.leading, .bottom], 5)
+                .frame(width: cellWidth,
+                       height: 35,
+                       alignment: .leading)
                 .background(Color.black.opacity(0.8))
         }
         .frame(width: cellWidth, height: 250, alignment: .center)
