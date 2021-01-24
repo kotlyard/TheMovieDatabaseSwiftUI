@@ -7,73 +7,43 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @State var username: String = ""
-    @State var password: String = ""
+struct LoginView: View {
+
+    @State private var username: String = ""
+    @State private var shouldPushPopularMovies = false
 
     var body: some View {
-        ZStack {
-            BackgroundView(topColor: .blue, bottomColor: .red)
-            VStack {
-                Spacer()
-                RegularTextField(placeholder: "Enter username",
-                                 binding: $username)
-                    .padding()
-                RegularTextField(placeholder: "Enter password",
-                                 binding: $password)
-                    .padding()
-                RegularButton(title: "Login")
-                    .padding()
-            }.padding()
-            
-        }
+        NavigationView {
+            ZStack {
+                BackgroundView(topColor: .blue, bottomColor: .red)
+                VStack {
+                    Spacer()
+                    Text("Hello \(username)!")
+                        .font(.largeTitle)
+                    Spacer()
+                    RegularTextField(placeholder: "Enter username",
+                                     binding: $username)
+                        .padding()
+                    RegularButton(title: "Login") {
+                        shouldPushPopularMovies = true
+                    }
+                    .disabled(username.isEmpty)
+                    
+                }.padding()
+                NavigationLink(
+                    "", destination: PopularMoviesView(popularMoviesVM: PopularMoviewViewModel()),
+                    isActive: $shouldPushPopularMovies)
+                }
+
+        }.navigationTitle("Login")
     }
+
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ContentView()
+            LoginView()
         }
-    }
-}
-
-struct BackgroundView: View {
-    var topColor: Color
-    var bottomColor: Color
-    
-    var body: some View {
-        LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
-                       startPoint: .topLeading,
-                       endPoint: .bottomTrailing)
-            .ignoresSafeArea()
-    }
-}
-
-struct RegularButton: View {
-    var title: String
-
-    var body: some View {
-        Button(action: {
-            
-        }, label: {
-            Text(title)
-                .foregroundColor(.white)
-                .frame(width: 300, height: 50)
-                .background(Color.blue)
-                .cornerRadius(10)
-        })
-    }
-}
-
-struct RegularTextField: View {
-    var placeholder: String
-    var binding: Binding<String>
-
-    var body: some View {
-        TextField(placeholder, text: binding)
-            .frame(width: 300, height: 40)
-            .background(Color.white)
-            .cornerRadius(5)
     }
 }

@@ -17,10 +17,11 @@ struct GetPopularMoviesResponse: Decodable {
 
 
     // MARK: - Result
-    struct Result: Decodable {
+    struct Result: Decodable, Identifiable {
         let posterPath: String
         let adult: Bool
-        let overview, releaseDate: String
+        let overview: String
+        let releaseDate: String
         let genreids: [Int]
         let id: Int
         let originalTitle: String

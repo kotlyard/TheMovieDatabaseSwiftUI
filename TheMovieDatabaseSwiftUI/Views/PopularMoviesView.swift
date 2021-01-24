@@ -9,25 +9,36 @@ import SwiftUI
 import URLImage
 
 let grid = GridItem()
-let data = [
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable(),
-    MovieDisplayable()
-]
+
+class PopularMoviewViewModel: ObservableObject, Identifiable {
+    let id = UUID()
+
+    @Published var popularMovies: [GetPopularMoviesResponse.Result] = []
+    
+
+    init() {
+        getPopularMovies()
+    }
+    
+    private func getPopularMovies() {
+        NetworkService.getPopularMovies { (movies, error) in
+            guard let movies = movies, error == nil else { return print(error) }
+            
+            DispatchQueue.main.async {
+                self.popularMovies = movies.results
+            }
+        }
+    }
+}
 
 struct PopularMoviesView: View {
+    @ObservedObject var popularMoviesVM: PopularMoviewViewModel
+
     var body: some View {
         NavigationView {
             ScrollView {
                 LazyVGrid(columns: [grid, grid]) {
-                    ForEach(data) {
+                    ForEach(popularMoviesVM.popularMovies) {
                         MoviewCell(movie: $0)
                     }
                 }
@@ -39,24 +50,24 @@ struct PopularMoviesView: View {
 struct PopularMoviesView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            PopularMoviesView()
+            PopularMoviesView(popularMoviesVM: PopularMoviewViewModel())
         }
     }
 }
 
 struct MoviewCell: View {
-    var movie: MovieDisplayable
+    var movie: GetPopularMoviesResponse.Result
 
     private let cellWidth = UIScreen.main.bounds.width * 0.46
 
     var body: some View {
         ZStack {
-            URLImage(url: movie.imageUrl) { image in
+            URLImage(url: URL(string: movie.posterPath)!) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
-            Text(movie.name)
+            Text(movie.originalTitle)
         }
         .frame(width: cellWidth, height: 250, alignment: .center)
         .cornerRadius(8)
