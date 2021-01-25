@@ -63,6 +63,23 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
         }.resume()
     }
 
+    static func getMovieCredits(movieId id: Int, _ completion: @escaping (MovieCredits?, Error?) -> Void) {
+        guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/\(id)/credits") else {
+            return completion(nil, nil)
+        }
+
+        // Creating query items
+        baseUrl.queryItems = [
+            URLQueryItem(name: "api_key", value: apiKey),
+        ]
+        
+        guard let url = baseUrl.url else { return completion(nil, nil) }
+
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            handleResponse(data: data, error: error, urlResponse: response, completion: completion)
+        }.resume()
+
+    }
 
     static func handleResponse<T: Decodable>(data: Data?,
                                              error: Error?,
@@ -76,7 +93,7 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
               httpResponse.statusCode == 200 else {
             return completion(nil, nil)
         }
-        
+
         do {
             let decodedResponse = try JSONDecoder().decode(T.self, from: data)
             completion(decodedResponse, nil)

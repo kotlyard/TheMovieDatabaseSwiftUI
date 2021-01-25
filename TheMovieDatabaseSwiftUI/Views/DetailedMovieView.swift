@@ -12,7 +12,7 @@ import URLImage
 class DetailedMovieViewModel: ObservableObject {
     
     @Published var movie: DetailedMovie?
-    
+    @Published var credits: MovieCredits?
 
     var genresFormatted: String {
         guard let genres = movie?.genres else { return "" }
@@ -20,7 +20,7 @@ class DetailedMovieViewModel: ObservableObject {
         return genres
             .reduce("", { $0 == "" ? $1.name : $0 + "," + $1.name })
     }
-    
+
     func getDetailedMovie(id: Int) {
         MoviesNetworkService.getMovie(by: id) { (movie, error) in
             guard let movie = movie, error == nil else {
@@ -29,6 +29,16 @@ class DetailedMovieViewModel: ObservableObject {
             
             DispatchQueue.main.async {
                 self.movie = movie
+            }
+        }
+
+        MoviesNetworkService.getMovieCredits(movieId: id) { (credits, error) in
+            guard let credits = credits, error == nil else {
+                return print(error.debugDescription)
+            }
+            
+            DispatchQueue.main.async {
+                self.credits = credits
             }
         }
     }
@@ -129,13 +139,14 @@ struct DetailedMovieView: View {
     }
 }
 
-//struct CastView: View {
-//    var
-//    var body: some View {
-//
-//    }
-//
-//}
+struct CastView: View {
+    var cast: Cast
+
+    var body: some View {
+        Text("sas")
+    }
+
+}
 
 // MARK: - Preview
 struct DetailedMovieView_Previews: PreviewProvider {
