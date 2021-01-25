@@ -79,9 +79,11 @@ struct DetailedMovieView: View {
                 LazyVStack(alignment: .center, spacing: 5) {
                     // MARK: - Header
                     ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                        URLImage(url: URL(string: MoviesNetworkService.imageBaseUrl + movie.backdropPath)! ) { image in
-                            image
-                                .aspectRatio(contentMode: .fill)
+                        if let url = MoviesNetworkService.createImageUrl(path: movie.backdropPath) {
+                            URLImage(url: url ) { image in
+                                image
+                                    .aspectRatio(contentMode: .fill)
+                            }
                         }
                         Button(action: {}, label: {
                             Image(systemName: "play.circle.fill")

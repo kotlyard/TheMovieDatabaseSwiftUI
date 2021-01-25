@@ -14,11 +14,7 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
 
     @Published var popularMovies: [PopularMovie] = []
 
-    init() {
-        getPopularMovies()
-    }
-
-    private func getPopularMovies() {
+    func getPopularMovies() {
         MoviesNetworkService.getPopularMovies { (movies, error) in
             guard let movies = movies, error == nil else {
                 return print(error.debugDescription)
@@ -48,6 +44,9 @@ struct PopularMoviesView: View {
                 }
             }
         }.navigationBarTitle("Popular Movies")
+        .onAppear {
+            popularMoviesVM.getPopularMovies()
+        }
     }
 }
 
@@ -68,10 +67,12 @@ struct MovieCell: View {
         let alignment = Alignment(horizontal: .leading, vertical: .bottom)
 
         ZStack(alignment: alignment) {
-            URLImage(url: MoviesNetworkService.createImageUrl(path: movie.posterPath)!) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
+            if let url = MoviesNetworkService.createImageUrl(path: movie.posterPath) {
+                URLImage(url: url ) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                }
             }
             Color.black.opacity(0.8).frame(width: cellWidth, height: cellWidth * 0.275)
             Text(movie.title)
