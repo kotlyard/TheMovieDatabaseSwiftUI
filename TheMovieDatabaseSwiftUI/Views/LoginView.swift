@@ -26,6 +26,7 @@ struct LoginView: View {
                     RegularTextField(placeholder: "Enter username",
                                      binding: $username)
                         .padding()
+                        .foregroundColor(.black)
                     RegularButton(title: "Login") {
                         shouldPushPopularMovies = true
                     }
@@ -35,6 +36,7 @@ struct LoginView: View {
                 NavigationLink(
                     "", destination: PopularMoviesView(),
                     isActive: $shouldPushPopularMovies)
+                    .isDetailLink(false)
             }.navigationTitle("Login")
         }
     }

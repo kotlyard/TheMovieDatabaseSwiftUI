@@ -104,7 +104,7 @@ struct DetailedMovieView: View {
                         Spacer()
                         GeneralInfoView(title: "Genre", text: movie.genres.first?.name ?? "Some shit")
                         Spacer()
-                        GeneralInfoView(title: "Released", text: movie.releaseDate)
+                        GeneralInfoView(title: "Language", text: movie.originalLanguage)
                             .padding(.trailing)
                     }
                     Group {
@@ -160,7 +160,7 @@ struct DetailedMovieView: View {
                         }.padding(.bottom, 25)
                     }
                 }
-            }.navigationBarTitle(movie.title, displayMode: .inline)
+            }.navigationBarTitle(movie.title)
             .navigationBarItems(trailing: Button(action: {
                 movieVM.shareMovie()
             }, label: {
