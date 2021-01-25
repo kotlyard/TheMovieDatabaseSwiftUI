@@ -8,6 +8,7 @@
 import SwiftUI
 import URLImage
 
+//MARK: - ViewModel
 class PopularMoviewViewModel: ObservableObject, Identifiable {
 
     let id = UUID()
@@ -27,6 +28,7 @@ class PopularMoviewViewModel: ObservableObject, Identifiable {
     }
 }
 
+//MARK: - PopularMoviesView
 struct PopularMoviesView: View {
     @ObservedObject var popularMoviesVM = PopularMoviewViewModel()
 
@@ -50,14 +52,7 @@ struct PopularMoviesView: View {
     }
 }
 
-struct PopularMoviesView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            PopularMoviesView(popularMoviesVM: PopularMoviewViewModel())
-        }
-    }
-}
-
+// MARK: - MovieCell
 struct MovieCell: View {
     var movie: PopularMovie
 
@@ -82,5 +77,15 @@ struct MovieCell: View {
         }
         .frame(width: cellWidth, height: 250)
         .cornerRadius(10)
+    }
+}
+
+
+// MARK: - Preview
+struct PopularMoviesView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            PopularMoviesView(popularMoviesVM: PopularMoviewViewModel())
+        }
     }
 }
