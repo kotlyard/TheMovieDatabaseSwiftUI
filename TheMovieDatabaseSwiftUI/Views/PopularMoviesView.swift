@@ -65,7 +65,7 @@ struct MovieCell: View {
     private let cellWidth = UIScreen.main.bounds.width * 0.46
 
     var body: some View {
-        let alignment = Alignment(horizontal: .center, vertical: .bottom)
+        let alignment = Alignment(horizontal: .leading, vertical: .bottom)
 
         ZStack(alignment: alignment) {
             #warning("remove force unwrap!")
@@ -74,17 +74,13 @@ struct MovieCell: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
+            Color.black.opacity(0.8).frame(width: cellWidth, height: cellWidth * 0.275)
             Text(movie.title)
                 .font(.system(.body, design: .rounded))
-                .multilineTextAlignment(.leading)
                 .foregroundColor(Color.white.opacity(0.8))
-                .padding([.leading, .bottom], 5)
-                .frame(width: cellWidth,
-                       height: 35,
-                       alignment: .leading)
-                .background(Color.black.opacity(0.8))
+                .offset(x: 5, y: -cellWidth * 0.1 - 5)
         }
-        .frame(width: cellWidth, height: 250, alignment: .center)
+        .frame(width: cellWidth, height: 250)
         .cornerRadius(10)
     }
 }
