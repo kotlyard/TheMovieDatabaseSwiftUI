@@ -47,7 +47,9 @@ struct PopularMoviesView: View {
             }
         }.navigationBarTitle("Popular Movies")
         .onAppear {
-            popularMoviesVM.getPopularMovies()
+            if popularMoviesVM.popularMovies.isEmpty {
+                popularMoviesVM.getPopularMovies()
+            }
         }
     }
 }

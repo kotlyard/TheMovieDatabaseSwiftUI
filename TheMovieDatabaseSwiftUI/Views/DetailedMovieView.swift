@@ -178,15 +178,8 @@ struct CastView: View {
     private let imageSide: CGFloat = 75
 
     var body: some View {
-        guard let url = MoviesNetworkService.createImageUrl(path: cast.profilePath) else {
-            return AnyView(
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: imageSide, height: imageSide)
-                )
-        }
-        return AnyView(
-            VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
+        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
+            if let url = MoviesNetworkService.createImageUrl(path: cast.profilePath) {
                 URLImage(url: url) { image in
                     image
                         .resizable()
@@ -194,13 +187,17 @@ struct CastView: View {
                         .aspectRatio(contentMode: .fill)
                         .cornerRadius(imageSide / 2)
                 }
-                Text(cast.name)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundColor(.gray)
-                    .frame(maxWidth: imageSide * 1.3)
+            } else {
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: imageSide, height: imageSide)
             }
-        )
+            Text(cast.name)
+            .font(.caption)
+            .fontWeight(.medium)
+            .foregroundColor(.gray)
+            .frame(maxWidth: imageSide * 1.3)
+        }
     }
 
 }
