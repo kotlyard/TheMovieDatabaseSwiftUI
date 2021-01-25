@@ -63,6 +63,13 @@ final class MoviesNetworkService: MoviesNetworkProvidable {
         }.resume()
     }
 
+    static func createImageUrl(path: String?) -> URL? {
+        guard let path = path,
+              let url = URL(string: imageBaseUrl + path) else { return nil }
+
+        return url
+    }
+
     static func getMovieCredits(movieId id: Int, _ completion: @escaping (MovieCredits?, Error?) -> Void) {
         guard var baseUrl = URLComponents(string: "https://api.themoviedb.org/3/movie/\(id)/credits") else {
             return completion(nil, nil)

@@ -60,12 +60,13 @@ struct DetailedMovieView: View {
     @ObservedObject private var movieVM = DetailedMovieViewModel()
     
     var body: some View {
-        guard let movie = movieVM.movie else {
+        guard let movie = movieVM.movie,
+              let _ = movieVM.credits else {
             return AnyView(
                 ProgressView("Downloading movie data...")
                     // Get movie data by id on appear
                     .onAppear(perform: {
-                        // I added a delay because getting data is too quick to notice loader
+                        // I added a delay because receiving data is too fast to notice loader
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             movieVM.getDetailedMovie(id: movieId)
                         }
@@ -75,7 +76,7 @@ struct DetailedMovieView: View {
 
         return AnyView(
             ScrollView {
-                VStack(alignment: .center, spacing: 5) {
+                LazyVStack(alignment: .center, spacing: 5) {
                     // MARK: - Header
                     ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
                         URLImage(url: URL(string: MoviesNetworkService.imageBaseUrl + movie.backdropPath)! ) { image in
@@ -93,40 +94,68 @@ struct DetailedMovieView: View {
                             return 45
                         }).offset(x: -50, y: 0)
                     }.frame(maxWidth: .infinity, maxHeight: 300)
-
+                    Spacer(minLength: 15)
                     // MARK: - General Info
-                    HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/) {
+                    HStack(alignment: .center) {
+                        GeneralInfoView(title: "Released", text: movie.releaseDate)
+                            .padding(.leading)
                         Spacer()
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Released").fontWeight(.semibold).font(.title3)
-                            Text(movie.releaseDate).foregroundColor(.gray)
-                        }.padding(.leading)
+                        GeneralInfoView(title: "Genre", text: movie.genres.first?.name ?? "Some shit")
                         Spacer()
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Genre").fontWeight(.semibold).font(.title3)
-                            Text(movie.genres.first?.name ?? "No genre").foregroundColor(.gray)
+                        GeneralInfoView(title: "Released", text: movie.releaseDate)
+                            .padding(.trailing)
+                    }
+                    Group {
+                        Spacer(minLength: 15)
+                        Text("Synopsis")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 15)
+                        Spacer()
+                        Text(movie.overview)
+                            .foregroundColor(.gray)
+                            .padding(.horizontal)
+                    }
+                    Spacer(minLength: 15)
+                    // MARK: - Main cast
+                    Group {
+                        Text("Main Cast")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 15)
+                        Spacer()
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHStack(alignment: .center, spacing: 25) {
+                                ForEach(movieVM.credits?.cast ?? []) {
+                                    CastView(cast: $0)
+                                }
+                            }
                         }
-                        Spacer()
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Language").fontWeight(.semibold).font(.title3)
-                            Text(movie.originalLanguage).foregroundColor(.gray)
-                        }.padding(.trailing)
-                        Spacer()
+                        .padding(.horizontal, 15)
                     }
                     Spacer()
-                    Text("Synopsis")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    Spacer()
-                    Text(movie.overview)
-                        .foregroundColor(.gray)
-                        .padding([.leading, .trailing], 70)
-                        .multilineTextAlignment(.leading)
-
-                    // MARK: - Main cast
-
-                    List() {
-                        
+                    // MARK: - Main technical team
+                    Group {
+                        Text("Main technical team")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 15)
+                        Spacer()
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHGrid(rows: [GridItem(), GridItem()]) {
+                                ForEach(movieVM.credits?.crew ?? [], id: \.self) {
+                                    Text($0.name)
+                                        .padding()
+                                    Text($0.job ?? "Loser")
+                                        .foregroundColor(.gray)
+                                        .font(.headline)
+                                        .padding()
+                                }
+                            }
+                        }.padding(.bottom, 25)
                     }
                 }
             }.navigationBarTitle(movie.title, displayMode: .inline)
@@ -135,17 +164,57 @@ struct DetailedMovieView: View {
             }, label: {
                 Image(systemName: "square.and.arrow.up").font(.title2)
             }))
+            
         )
     }
 }
 
+// MARK: - CastView
 struct CastView: View {
     var cast: Cast
 
+    private let imageSide: CGFloat = 75
+
     var body: some View {
-        Text("sas")
+        guard let url = MoviesNetworkService.createImageUrl(path: cast.profilePath) else {
+            return AnyView(
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: imageSide, height: imageSide)
+                )
+        }
+        return AnyView(
+            VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
+                URLImage(url: url) { image in
+                    image
+                        .resizable()
+                        .frame(width: imageSide, height: imageSide)
+                        .aspectRatio(contentMode: .fill)
+                        .cornerRadius(imageSide / 2)
+                }
+                Text(cast.name)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: imageSide * 1.3)
+            }
+        )
     }
 
+}
+
+// MARK: - GeneralInfoView
+struct GeneralInfoView: View {
+
+    var title: String
+    var text: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title).fontWeight(.semibold).font(.title3)
+            Text(text).foregroundColor(.gray)
+        }
+    }
 }
 
 // MARK: - Preview

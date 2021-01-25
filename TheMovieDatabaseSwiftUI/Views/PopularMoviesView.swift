@@ -68,8 +68,7 @@ struct MovieCell: View {
         let alignment = Alignment(horizontal: .leading, vertical: .bottom)
 
         ZStack(alignment: alignment) {
-            #warning("remove force unwrap!")
-            URLImage(url: URL(string: MoviesNetworkService.imageBaseUrl + movie.posterPath)!) { image in
+            URLImage(url: MoviesNetworkService.createImageUrl(path: movie.posterPath)!) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
